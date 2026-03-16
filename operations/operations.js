@@ -113,8 +113,16 @@ const setTotalWaitTimeForFinalization = (textElement, writeConfiguration, initia
     initializationConfiguration.totalWaitTimeForFinalization = waitTimeUntilLetterStyleFinalization
 }
 
+const khoshnusLog = (label, data) => {
+    console.log("[khoshnus] " + label, data);
+    if (typeof window !== "undefined") {
+        if (!window.__khoshnusLogs) window.__khoshnusLogs = [];
+        window.__khoshnusLogs.push({ t: Date.now(), label, data: JSON.parse(JSON.stringify(data || {})) });
+    }
+};
+
 export const write = (svgId, text, initializationConfiguration, writingConfiguration = defaultWritingConfiguration) => {
-    console.log("[khoshnus] write()", { svgId, text, writingConfiguration });
+    khoshnusLog("write()", { svgId, text, writingConfiguration });
 
     checkDeclaration(svgId);
     const { textElementAttributes, writeConfiguration } = validateAndReturnConfiguration(writingConfiguration);
@@ -158,19 +166,19 @@ const doWrite = (
     setTotalWaitTimeForFinalization(textElement, writeConfiguration, initializationConfiguration);
 
     const svg = document.getElementById(svgId) || document.getElementById(KHOSHNUS_SVG_ID);
-    console.log("[khoshnus] doWrite()", {
+    const doWriteData = {
         svgId,
         hasSvg: !!svg,
         childCountBefore: svg ? svg.childNodes.length : null,
         textLength: textElement.childNodes.length,
-    });
+    };
+    khoshnusLog("doWrite()", doWriteData);
     if (svg) {
         svg.appendChild(textElement);
-        console.log("[khoshnus] after append", {
-            childCountAfter: svg.childNodes.length,
-        });
+        khoshnusLog("after append", { childCountAfter: svg.childNodes.length });
     } else {
         console.warn("[khoshnus] svg not found in doWrite", { svgId });
+        khoshnusLog("doWrite SVG not found", { svgId });
     }
     return textElement.id;
 };
