@@ -116,22 +116,24 @@ const setTotalWaitTimeForFinalization = (textElement, writeConfiguration, initia
 export const write = (svgId, text, initializationConfiguration, writingConfiguration = defaultWritingConfiguration) => {
     checkDeclaration(svgId);
     const { textElementAttributes, writeConfiguration } = validateAndReturnConfiguration(writingConfiguration)
-    const svg = document.getElementById(svgId) || document.getElementById(KHOSHNUS_SVG_ID)
     const textId = crypto.randomUUID()
     if (writeConfiguration.delayOperation) {
-        setTimeout(() => doWrite(svg, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration), writeConfiguration.delayOperation)
+        setTimeout(() => doWrite(svgId, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration), writeConfiguration.delayOperation)
     } else {
-        return doWrite(svg, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration)
+        return doWrite(svgId, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration)
     }
     return textId
 }
 
-const doWrite = (svg, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration) => {
+const doWrite = (svgId, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration) => {
     const textElement = createTextElement(textId, textElementAttributes);
     writeLetters(textElement, text, writeConfiguration, initializationConfiguration);
     setTotalWaitTimeForFinalization(textElement, writeConfiguration, initializationConfiguration);
 
-    svg.appendChild(textElement);
+    const svg = document.getElementById(svgId) || document.getElementById(KHOSHNUS_SVG_ID);
+    if (svg) {
+        svg.appendChild(textElement);
+    }
     return textElement.id;
 }
 
