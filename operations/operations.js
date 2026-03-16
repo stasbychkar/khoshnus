@@ -114,28 +114,66 @@ const setTotalWaitTimeForFinalization = (textElement, writeConfiguration, initia
 }
 
 export const write = (svgId, text, initializationConfiguration, writingConfiguration = defaultWritingConfiguration) => {
-    checkDeclaration(svgId);
-    const { textElementAttributes, writeConfiguration } = validateAndReturnConfiguration(writingConfiguration)
-    const textId = crypto.randomUUID()
-    if (writeConfiguration.delayOperation) {
-        setTimeout(() => doWrite(svgId, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration), writeConfiguration.delayOperation)
-    } else {
-        return doWrite(svgId, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration)
-    }
-    return textId
-}
+    console.log("[khoshnus] write()", { svgId, text, writingConfiguration });
 
-const doWrite = (svgId, text, textId, textElementAttributes, writeConfiguration, initializationConfiguration) => {
+    checkDeclaration(svgId);
+    const { textElementAttributes, writeConfiguration } = validateAndReturnConfiguration(writingConfiguration);
+    const textId = crypto.randomUUID();
+    if (writeConfiguration.delayOperation) {
+        setTimeout(
+            () =>
+                doWrite(
+                    svgId,
+                    text,
+                    textId,
+                    textElementAttributes,
+                    writeConfiguration,
+                    initializationConfiguration
+                ),
+            writeConfiguration.delayOperation
+        );
+    } else {
+        return doWrite(
+            svgId,
+            text,
+            textId,
+            textElementAttributes,
+            writeConfiguration,
+            initializationConfiguration
+        );
+    }
+    return textId;
+};
+
+const doWrite = (
+    svgId,
+    text,
+    textId,
+    textElementAttributes,
+    writeConfiguration,
+    initializationConfiguration
+) => {
     const textElement = createTextElement(textId, textElementAttributes);
     writeLetters(textElement, text, writeConfiguration, initializationConfiguration);
     setTotalWaitTimeForFinalization(textElement, writeConfiguration, initializationConfiguration);
 
     const svg = document.getElementById(svgId) || document.getElementById(KHOSHNUS_SVG_ID);
+    console.log("[khoshnus] doWrite()", {
+        svgId,
+        hasSvg: !!svg,
+        childCountBefore: svg ? svg.childNodes.length : null,
+        textLength: textElement.childNodes.length,
+    });
     if (svg) {
         svg.appendChild(textElement);
+        console.log("[khoshnus] after append", {
+            childCountAfter: svg.childNodes.length,
+        });
+    } else {
+        console.warn("[khoshnus] svg not found in doWrite", { svgId });
     }
     return textElement.id;
-}
+};
 
 // ------------------------------------------------------------------------------------------------------------------------
 
