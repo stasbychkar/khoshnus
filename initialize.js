@@ -170,7 +170,12 @@ const initializeEraseKeyframesCss = ({
 `;
 
 const initializeKeyframes = (initializationConfiguration) => {
-    const style = document.querySelector("style");
+    let style = document.querySelector("style");
+    if (!style) {
+        style = document.createElement("style");
+        style.setAttribute("data-khoshnus", "true");
+        document.head.appendChild(style);
+    }
     style.innerHTML = style.innerHTML.concat(initializeDrawKeyframesCss({ svgId: initializationConfiguration.svgId, start: initializationConfiguration.start, end: initializationConfiguration.end }));
     style.innerHTML = style.innerHTML.concat(initializeEraseKeyframesCss({ svgId: initializationConfiguration.svgId, start: initializationConfiguration.start, end: initializationConfiguration.end }));
 }
