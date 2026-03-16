@@ -176,10 +176,12 @@ const initializeKeyframes = (initializationConfiguration) => {
         style.setAttribute("data-khoshnus", "true");
         document.head.appendChild(style);
     }
-    console.log("[khoshnus] initializeKeyframes", {
-        svgId: initializationConfiguration.svgId,
-        styleFound: !!style,
-    });
+    const initData = { svgId: initializationConfiguration.svgId, styleFound: !!style };
+    console.log("[khoshnus] initializeKeyframes", initData);
+    if (typeof window !== "undefined") {
+        if (!window.__khoshnusLogs) window.__khoshnusLogs = [];
+        window.__khoshnusLogs.push({ t: Date.now(), label: "initializeKeyframes", data: initData });
+    }
     style.innerHTML = style.innerHTML.concat(
         initializeDrawKeyframesCss({
             svgId: initializationConfiguration.svgId,
@@ -256,4 +258,3 @@ export const initialize = (initializationConfiguration = defaultInitializationCo
     initializeKeyframes(fullInitializationConfiguration);
     return fullInitializationConfiguration;
 }
-
