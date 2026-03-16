@@ -176,9 +176,25 @@ const initializeKeyframes = (initializationConfiguration) => {
         style.setAttribute("data-khoshnus", "true");
         document.head.appendChild(style);
     }
-    style.innerHTML = style.innerHTML.concat(initializeDrawKeyframesCss({ svgId: initializationConfiguration.svgId, start: initializationConfiguration.start, end: initializationConfiguration.end }));
-    style.innerHTML = style.innerHTML.concat(initializeEraseKeyframesCss({ svgId: initializationConfiguration.svgId, start: initializationConfiguration.start, end: initializationConfiguration.end }));
-}
+    console.log("[khoshnus] initializeKeyframes", {
+        svgId: initializationConfiguration.svgId,
+        styleFound: !!style,
+    });
+    style.innerHTML = style.innerHTML.concat(
+        initializeDrawKeyframesCss({
+            svgId: initializationConfiguration.svgId,
+            start: initializationConfiguration.start,
+            end: initializationConfiguration.end,
+        })
+    );
+    style.innerHTML = style.innerHTML.concat(
+        initializeEraseKeyframesCss({
+            svgId: initializationConfiguration.svgId,
+            start: initializationConfiguration.start,
+            end: initializationConfiguration.end,
+        })
+    );
+};
 
 export const defaultInitializationConfiguration = {
     svgId: KHOSHNUS_SVG_ID,
@@ -240,3 +256,4 @@ export const initialize = (initializationConfiguration = defaultInitializationCo
     initializeKeyframes(fullInitializationConfiguration);
     return fullInitializationConfiguration;
 }
+
